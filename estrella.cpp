@@ -9,6 +9,7 @@ class AlineacionEstrella{
 private:
 	template <typename T>
 	void print(vector<vector<T>>& matrix){
+		cout << endl;
 		for(int i=0; i<matrix.size(); ++i){
 			for(int j=0; j<matrix[0].size(); ++j){
 				cout << matrix[i][j] << "\t";
@@ -33,8 +34,8 @@ private:
 		pair<string, string> curResult;
 		int count = 0;
 		
-		//while(!btStack.empty() and count < 100){
-		while(!btStack.empty()){
+		while(!btStack.empty() and count < 100){
+		//while(!btStack.empty()){
 			int i = btStack.top()->i;
 			int j = btStack.top()->j;
 			string cur1 = btStack.top()->cur1;
@@ -137,7 +138,7 @@ private:
 		return result;
 	}
 	
-	void calcularScores(){
+	void inicializarMatrices(){//
 		for(int i=0; i<secuencias.size(); ++i){
 			//cout << secuencias[i] << endl;
 			for(int j=i+1; j<secuencias.size(); ++j){
@@ -150,7 +151,29 @@ private:
 				mejoresSecuenciasSecond[j][i] = aux.second;
 			}
 		}
-	}
+	}
+		
+	int score(vector<string> seqs){
+		int result = 0;
+		int aux = 0;
+		
+		for(int i =0 ; i<seqs[0].size(); ++i){
+			aux = 0;
+			for(int j =0 ; j<seqs.size(); ++j){
+				for(int k =j+1 ; k<seqs.size(); ++k){
+					if(seqs[j][i] == '_' and seqs[k][i] == '_');
+					else if(seqs[j][i] == seqs[k][i])  aux += 1;
+					else if(seqs[j][i] == '_' or seqs[k][i] == '_')  aux -= 2;
+					else if(seqs[j][i] != seqs[k][i])  aux -= 1;
+				}
+			}
+			//cout <<  aux << " ";
+			result += aux;
+		}
+		cout << endl;
+		return result;
+	}
+		
 	
 public:
 	vector<string> secuencias;
@@ -159,9 +182,9 @@ public:
 	vector<vector<string>> mejoresSecuenciasSecond;
 	
 	AlineacionEstrella(vector<string>& secuencias_):secuencias(secuencias_), scores(secuencias.size(),vector<int>(secuencias.size(),0)), mejoresSecuenciasFirst(secuencias.size(),vector<string>(secuencias.size(),"")), mejoresSecuenciasSecond(secuencias.size(),vector<string>(secuencias.size(),"")){
-		calcularScores();
-		print(mejoresSecuenciasFirst);
-		print(mejoresSecuenciasSecond);
+		inicializarMatrices();
+		//print(mejoresSecuenciasFirst);
+		//print(mejoresSecuenciasSecond);
 
 		int max = -1000000;
 		int index = -1;
@@ -229,9 +252,12 @@ public:
 			result.push_back(auxSequence);
 		}
 
-		/*for(int j=0; j < result.size(); ++j)
+		for(int j=0; j < result.size(); ++j)
 			cout<<result[j]<<endl;
-		*/
+		
+		cout << "el score de todas las secuencias alineadas es: " << score(result) << endl;
+		cout << "la longitud es: " << result[0].size() << endl;
+		print(scores);
 	}
 
 };
