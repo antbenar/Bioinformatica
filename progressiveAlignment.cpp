@@ -155,7 +155,7 @@ private:
 		return conGap/sinGap;
 	}
 	
-	void calcularScores(){
+	void inicializarMatrices(){
 		for(int i=0; i<secuencias.size(); ++i){
 			//cout << secuencias[i] << endl;
 			for(int j=i+1; j<secuencias.size(); ++j){
@@ -171,7 +171,8 @@ private:
 				matrizDistancias[i][j] = matrizDistancias[j][i] = distancia_;
 			}
 		}
-	}
+	}
+
 	//-----------------------------------------------------Funciones calcular Q
 	double sumatoriaMatrizDistancias( int pos ){
 		double result = 0;
@@ -253,6 +254,7 @@ public:
 	vector<vector<string>> mejoresSecuenciasSecond;
 	vector<vector<int>> scores;
 	
+	
 	ProgressiveAlignment(vector<string>& secuencias_):
 		secuencias(secuencias_), 
 		matrizDistancias(secuencias.size(),vector<double>(secuencias.size(),0)), 
@@ -261,13 +263,34 @@ public:
 		scores(secuencias.size(),vector<int>(secuencias.size(),0))
 	{
 		
-		calcularScores();
+		inicializarMatrices();
 		print(matrizDistancias);
 		
-		for(int i=0; i<matrizDistancias.size()-1; ++i){
+		//-posiciones de la matriz
+		vector<vector<int>> pos(matrizDistancias.size(), vector<int>(1,0));
+		for(int i=0; i<matrizDistancias.size(); ++i){
+			pos[i] = i;
+		}
+		
+		
+		for(int i=0; i<matrizDistancias.size(); ++i){
 			vector<vector<double>> q = calcularMatrizQ();
-			pair<int, int> pos = getMinPos(q);
-			reducirMatriz(pos.first, pos.second);			
+			cout << "-----------------Q matrix: " << endl;
+			print(q);
+			pair<int, int> positions = getMinPos(q);
+			
+			cout << positions.first << ", " << positions.second << endl;
+			cout << "se agruparon: " << pos[positions.first] << ", " << pos[positions.second] << endl;
+			
+			//---------quitar posiciones de mi vector
+			int pos1 = max(positions.first, positions.second);
+			int pos2 = min(positions.first, positions.second);
+			
+			pos.erase(pos.begin()+pos1);
+			pos.erase(pos.begin()+pos2);
+			pos.insert(pos.begin(),0);
+			
+			reducirMatriz(positions.first, positions.second);			
 			print(matrizDistancias);
 		}
 
@@ -277,8 +300,9 @@ public:
 	{
 		print(matrizDistancias);
 		
-		for(int i=0; i<matrizDistancias.size()-1; ++i){
+		for(int i=0; i<matrizDistancias.size(); ++i){
 			vector<vector<double>> q = calcularMatrizQ();
+			print(q);
 			pair<int, int> pos = getMinPos(q);
 			reducirMatriz(pos.first, pos.second);			
 			print(matrizDistancias);
