@@ -1,8 +1,8 @@
 #include <iostream>
 //#include "seqLocalGlobal.cpp"
 //#include "estrella.cpp"
-#include "progressiveAlignment.cpp"
-
+//#include "progressiveAlignment.cpp"
+#include "estrategiasSimilitud.cpp"
 
 using namespace std;
 
@@ -30,30 +30,7 @@ int main(){
 	sequencias.push_back("ATCTTCTT");
 	sequencias.push_back("ACTGACC");
 	*/
-	/*
-	sequencias.push_back("GCTCGAC");
-	sequencias.push_back("GCTCG");
-	sequencias.push_back("AAATCGA");
-	sequencias.push_back("CATTGCC");
-	*/
-	/*
-	sequencias.push_back("CAAATGCAGGGACACCACA");
-	sequencias.push_back("TTTGTGAAGGCTTCGCAGGTACGTGAAAACCCATCCG");
-	sequencias.push_back("ACAAAATCCTGATGGGTCTTGGTATGGTTGCTGGGGAATTTGCTACACT");
-	sequencias.push_back("TTTATGAGTGGTCAGGGTGCAATCCCCTTCCACCAGAGTTCTGGCTTCTACCCAAA");
-	sequencias.push_back("TGTAGGCCCAATCACTGCCTTAGTCAGATCACTAAGAAAAGAATTGTACAATGAGCCTTATGATCGAG");
-	sequencias.push_back("TGATGTATTAGGACCTCAACACAAGAAGGAAATTATTCGATATTTGTATAATCATCAGAACGAAGATGGGGGTTGGGGATTCC");
-	sequencias.push_back("GGGATTTCTTCATCATGTGGGAGAGCGTGTTCTGAACACTTGGCCATTTTCAATGCTAAGACAGAAGGCAATAGAAGTTGCTATTAATCATGTACGTTACG");
-	*/	
-	
-	/*
-	sequencias.push_back("TGTTGTCACTTATGCGTGCTGGGCAGGCTGAGATAGATCCGACAC");
-	sequencias.push_back("GCAGGCCCATTATTCTTCGTTCAACCTTTGGTAATGGCACTGTACATTACAGGATCCCTTGA");
-	sequencias.push_back("TGATGTATTAGGACCTCAACACAAGAAGGAAATTATTCGATATTTGTATAATCATCAGAACGAAGATGGGGGTTGGGGATTCC");
-	sequencias.push_back("TACAGGAGTATTTATGAGGAACTGTACCCTAAACTACTCATCATATCGAAACATCTTTCCTATATGGGCTCTTGGAGAGTACCGTCGCAGAGTCTTATGTGCATGA");
-	
-	AlineacionEstrella aEstrella(sequencias);
-	*/
+	//AlineacionEstrella aEstrella(sequencias);
 	
 	/*
 	vector<vector<double>> matrizDistancias = {
@@ -64,17 +41,31 @@ int main(){
 		{6,9,6,5,0,8},
 		{8,11,8,9,8,0}
 	};
-	*/
+	
+	
 	sequencias.push_back("CAAATGCAGGGACACCACA");
 	sequencias.push_back("TTCTGGGTCACGGTGCTAGGGG");
 	sequencias.push_back("AGCAGCAATGGTGGTTTCCCTGCTTGGGAGCC");
 	sequencias.push_back("ATTTTCCCTATTCATCCAGGGAAAATGTTATGTT");
 	sequencias.push_back("TGAAGAGTATGGACCAACATTAAAGAAAGCACACCAC");
 	
+	*/
 	
-	
-	ProgressiveAlignment pAlg(sequencias);
+	//ProgressiveAlignment pAlg(sequencias);
 	//ProgressiveAlignment pAlg(matrizDistancias);
+	
+	
+	vector<vector<double>> matrizDistancias = {
+		{0,2.15,0.7,1.07,1.56},
+		{2.15,0,1.38,1.01,2.83},
+		{0.7,1.38,0,0.29,1.86},
+		{1.07,1.01,0.29,0,2.04},
+		{1.56,2.83,1.86,2.04,0},
+	};
+	
+	EstrategiaSimilitud eSim(matrizDistancias,"min");
+	//EstrategiaSimilitud eSim(matrizDistancias,"max");
+	//EstrategiaSimilitud eSim(matrizDistancias,"avg");
 	
 	return 0;
 }
@@ -82,7 +73,3 @@ int main(){
 
 //g++ -std=c++11 seqGlobal.cpp -o seqGlobal.exe
 //http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Needleman-Wunsch
-
-/*CAACAGGCCTCATGCAGTAAACACTGGATGGGCTATGCTG
-GCTCTCATTGAGGCTGAACAGGCAA
-*/

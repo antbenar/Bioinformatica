@@ -15,7 +15,7 @@ private:
 		
 		cout << endl;
 		for(int i=0; i<matrix.size(); ++i){
-			for(int j=0; j<matrix[0].size(); ++j){
+			for(int j=0; j<matrix[i].size(); ++j){
 				cout << matrix[i][j] << "\t";
 			}
 			cout << endl;
@@ -199,7 +199,7 @@ private:
 	
 	//-------------------------------------------------------FUNCIONES REDUCIR matrizDistancias
 	pair<int, int> getMinPos(vector<vector<double>> q){
-		int min = 100000;
+		double min = 100000;
 		int min_i, min_j;
 		for(int i=0; i<q.size(); ++i){
 			for(int j=i+1; j<q.size(); ++j){
@@ -255,6 +255,51 @@ public:
 	vector<vector<int>> scores;
 	
 	
+	void progressiveAlignment(){
+		cout << "-----------------matriz distancias: " << endl;
+		print(matrizDistancias);
+		
+		//-posiciones de la matriz
+		vector<vector<int>> clusters(matrizDistancias.size(), vector<int>(1,0));
+		for(int i=0; i<matrizDistancias.size(); ++i){
+			clusters[i][0] = i;
+		}
+		
+		
+		for(int i=0; matrizDistancias.size() != 2 ; ++i){
+			cout << "_____________________________________________________________iteracion " << i << endl;
+			vector<vector<double>> q = calcularMatrizQ();
+			cout << "-----------------Q matrix: " << endl;
+			print(q);
+			pair<int, int> positions = getMinPos(q);
+			
+			
+			//------------------------------------------------------------INICIO IMPRIMIR NUEVOS CLUSTER
+			cout << "se agruparon clusters " << positions.first << " y " << positions.second << " con Q-distance de: " << q[positions.first][positions.second] << endl;
+			//cout << "se agruparon: " << pos[positions.first] << " - " << pos[positions.second] << endl;
+			
+			//---------quitar posiciones de mi vector
+			int pos1 = max(positions.first, positions.second);
+			int pos2 = min(positions.first, positions.second);
+			
+			vector<int> aux(clusters[pos1]);
+			aux.insert(aux.end(), clusters[pos2].begin(), clusters[pos2].end());
+			
+			clusters.erase(clusters.begin()+pos1);
+			clusters.erase(clusters.begin()+pos2);
+			clusters.insert(clusters.begin(),aux);
+			
+			cout << "clusters actuales: " << endl;
+			print(clusters);
+			//------------------------------------------------------------FIN IMPRIMIR NUEVOS CLUSTER
+			
+			reducirMatriz(positions.first, positions.second);	
+			cout << "-----------------matriz distancias: " << endl;
+			print(matrizDistancias);
+		}		
+	}
+	
+	
 	ProgressiveAlignment(vector<string>& secuencias_):
 		secuencias(secuencias_), 
 		matrizDistancias(secuencias.size(),vector<double>(secuencias.size(),0)), 
@@ -264,49 +309,12 @@ public:
 	{
 		
 		inicializarMatrices();
-		print(matrizDistancias);
-		
-		//-posiciones de la matriz
-		vector<vector<int>> pos(matrizDistancias.size(), vector<int>(1,0));
-		for(int i=0; i<matrizDistancias.size(); ++i){
-			pos[i] = i;
-		}
-		
-		
-		for(int i=0; i<matrizDistancias.size(); ++i){
-			vector<vector<double>> q = calcularMatrizQ();
-			cout << "-----------------Q matrix: " << endl;
-			print(q);
-			pair<int, int> positions = getMinPos(q);
-			
-			cout << positions.first << ", " << positions.second << endl;
-			cout << "se agruparon: " << pos[positions.first] << ", " << pos[positions.second] << endl;
-			
-			//---------quitar posiciones de mi vector
-			int pos1 = max(positions.first, positions.second);
-			int pos2 = min(positions.first, positions.second);
-			
-			pos.erase(pos.begin()+pos1);
-			pos.erase(pos.begin()+pos2);
-			pos.insert(pos.begin(),0);
-			
-			reducirMatriz(positions.first, positions.second);			
-			print(matrizDistancias);
-		}
-
+		progressiveAlignment();
 	}
 	
 	ProgressiveAlignment(vector<vector<double>>& matrizDistancias_): matrizDistancias(matrizDistancias_)
 	{
-		print(matrizDistancias);
-		
-		for(int i=0; i<matrizDistancias.size(); ++i){
-			vector<vector<double>> q = calcularMatrizQ();
-			print(q);
-			pair<int, int> pos = getMinPos(q);
-			reducirMatriz(pos.first, pos.second);			
-			print(matrizDistancias);
-		}
+		progressiveAlignment();
 	}
 };
 
